@@ -1,23 +1,34 @@
-// src/Components/ColorForm/ColorForm.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { nanoid } from "nanoid";
 import ColorInput from "../ColorInput/ColorInput";
 import "./ColorForm.css";
 
-function ColorForm({ addColor }) {
+function ColorForm({ addColor, initialColor, handleSave, handleCancel }) {
   const [colorHex, setColorHex] = useState("#000000");
   const [role, setRole] = useState("");
   const [contrast, setContrast] = useState("#000000");
 
+  useEffect(() => {
+    if (initialColor) {
+      setColorHex(initialColor.hex);
+      setRole(initialColor.role);
+      setContrast(initialColor.contrastText);
+    }
+  }, [initialColor]);
+
   const handleSubmit = (event) => {
     event.preventDefault(); // Prevent Refreshing the Page
     const newColor = {
-      id: nanoid(),
+      id: initialColor ? initialColor.id : nanoid(),
       hex: colorHex,
       contrastText: contrast,
       role: role,
-    }; // New Card added to the List
-    addColor(newColor); // Submit Button to Add a Color
+    };
+    if (handleSave) {
+      handleSave(newColor);
+    } else {
+      addColor(newColor);
+    }
     setColorHex("#000000"); // Reset the input after submission
     setRole(""); // Reset the role input after submission
     setContrast("#000000"); // Reset the input after submission
@@ -33,7 +44,12 @@ function ColorForm({ addColor }) {
         onChange={(e) => setRole(e.target.value)}
         placeholder="Enter role"
       />
-      <button type="submit">Add Color</button>
+      <button type="submit">{handleSave ? "Save Color" : "Add Color"}</button>
+      {handleCancel && (
+        <button type="button" onClick={handleCancel}>
+          Cancel
+        </button>
+      )}
     </form>
   );
 }

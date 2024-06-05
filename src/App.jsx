@@ -1,4 +1,3 @@
-/// src/App.jsx
 import React, { useState } from "react";
 import { initialColors } from "./lib/colors";
 import Color from "./Components/Color/Color";
@@ -14,6 +13,14 @@ function App() {
 
   const deleteColor = (id) => {
     setColors(colors.filter((color) => color.id !== id));
+  };
+
+  const updateColor = (updatedColor) => {
+    setColors(
+      colors.map((color) =>
+        color.id === updatedColor.id ? updatedColor : color
+      )
+    );
   };
 
   return (
